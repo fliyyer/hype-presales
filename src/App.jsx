@@ -4,20 +4,31 @@ import { ethers } from 'ethers'
 const WALLET_ADDRESS = '0x8254a986319461bf29ae35940a96786e507ad9ac'
 const HYPE_SYMBOL = 'HYPE'
 
-
 function App() {
   const [amount, setAmount] = useState('')
   const [walletAddress, setWalletAddress] = useState('')
   const [timeLeft, setTimeLeft] = useState({ days: 1, hours: 18 })
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+  }, [])
 
   const connectWallet = async () => {
-    if (window.ethereum) {
+    if (typeof window.ethereum !== 'undefined') {
       try {
         const provider = new ethers.BrowserProvider(window.ethereum)
         const accounts = await provider.send('eth_requestAccounts', [])
         setWalletAddress(accounts[0])
       } catch (error) {
         console.error('Wallet connection failed:', error)
+      }
+    } else if (isMobile) {
+      try {
+        window.location.href = `https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`
+
+      } catch (error) {
+        console.error('Mobile wallet connection failed:', error)
       }
     } else {
       alert('Please install MetaMask!')
@@ -44,13 +55,10 @@ function App() {
     <div className="min-h-screen bg-black text-green-400 font-mono flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-2xl border border-green-500 p-8 rounded-lg space-y-6 bg-black/60 backdrop-blur-md shadow-lg">
 
-        {/* Title */}
         <h1 className="text-5xl text-center border-b border-green-500 pb-4">🚀 PRESALE</h1>
 
-        {/* Subtitle */}
         <p className="text-center text-xl">Join us now and grab your $HYPE early!</p>
 
-        {/* Amount input */}
         <div className="space-y-2">
           <label className="text-sm">Amount ({HYPE_SYMBOL})</label>
           <input
@@ -62,7 +70,6 @@ function App() {
           />
         </div>
 
-        {/* Connect Wallet */}
         <button
           className={`w-full p-3 rounded font-bold transition ${walletAddress
             ? 'bg-green-700 text-white cursor-default'
@@ -74,7 +81,6 @@ function App() {
           {walletAddress ? '✅ Wallet Connected' : '🔗 Connect Wallet'}
         </button>
 
-        {/* Wallet Info */}
         {walletAddress && (
           <div className="bg-green-900/50 border border-green-400 rounded p-4 text-sm space-y-1">
             <p><strong>Wallet:</strong> {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</p>
@@ -82,7 +88,6 @@ function App() {
           </div>
         )}
 
-        {/* Manual Send */}
         <div className="pt-4">
           <p className="text-sm mb-1">Or send manually to:</p>
           <code className="block p-2 text-sm bg-green-800/40 border border-green-400 rounded break-all">
@@ -90,10 +95,18 @@ function App() {
           </code>
         </div>
 
-        {/* Countdown */}
         <div className="text-center text-2xl border-t border-green-500 pt-4">
           ⏳ {timeLeft.days} Days <span className="ml-4">{timeLeft.hours} Hours</span>
         </div>
+
+        {isMobile && !walletAddress && (
+          <div className="text-yellow-400 text-sm mt-4">
+            <p>ℹ️ If MetaMask doesn't open automatically:</p>
+            <p>1. Copy this page URL</p>
+            <p>2. Open MetaMask app</p>
+            <p>3. Paste URL in MetaMask browser</p>
+          </div>
+        )}
       </div>
     </div>
   )
