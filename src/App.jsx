@@ -64,8 +64,8 @@ function App() {
         {/* Connect Wallet */}
         <button
           className={`w-full p-3 rounded font-bold transition ${walletAddress
-              ? 'bg-green-700 text-white cursor-default'
-              : 'bg-green-400 hover:bg-green-300 text-black'
+            ? 'bg-green-700 text-white cursor-default'
+            : 'bg-green-400 hover:bg-green-300 text-black'
             }`}
           onClick={connectWallet}
           disabled={!!walletAddress}
