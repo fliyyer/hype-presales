@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 const WALLET_ADDRESS = '0x8254a986319461bf29ae35940a96786e507ad9ac'
 const HYPE_SYMBOL = 'HYPE'
 
+
 function App() {
   const [amount, setAmount] = useState('')
   const [walletAddress, setWalletAddress] = useState('')
